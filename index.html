@@ -819,21 +819,26 @@ const STARTER = [
 
 /* ---------- 儲存 ---------- */
 function normHist(h) {
-  h = { runs: [], best: 0, ...(h || {}) };
+  // 雲端讀回來的資料是唯讀的，先複製一份才能修改
+  h = { runs: [], best: 0, ...JSON.parse(JSON.stringify(h || {})) };
   if (h.stars == null) h.stars = h.totalStars || 0;
   if (h.earned == null) h.earned = h.stars;
   h.owned = h.owned || {};
   h.badges = h.badges || {};
-  if (!h.stats) {
-    const rs = h.runs || [];
-    h.stats = {
-      games: rs.length, tests: rs.filter((r) => r.mode === "test").length,
-      correct: rs.reduce((n, r) => n + (r.correct || 0), 0),
-      perfect: rs.filter((r) => r.mode === "test" && r.total >= 5 && r.correct === r.total).length,
-      perfect15: rs.filter((r) => r.mode === "test" && r.total >= 15 && r.correct === r.total).length,
-      maxCombo: 0, pulls: 0, streak: 0, bestStreak: 0, lastDay: ""
-    };
-  }
+  const rs = h.runs || [], st = h.stats || {};
+  const test = rs.filter((r) => r.mode === "test"), dict = rs.filter((r) => r.mode === "dict");
+  const max = (k, v) => { st[k] = Math.max(st[k] || 0, v); };
+  max("games", rs.length);
+  max("tests", test.length);
+  max("correct", rs.reduce((n, r) => n + (r.correct || 0), 0));
+  max("perfect", test.filter((r) => r.total >= 5 && r.correct === r.total).length);
+  max("perfect15", test.filter((r) => r.total >= 15 && r.correct === r.total).length);
+  max("dicts", dict.length);
+  max("dictPerfect", dict.filter((r) => r.total >= 10 && r.correct === r.total).length);
+  max("pulls", Object.keys(h.owned).some((k) => /secret/.test(k)) ? 1 : 0);
+  ["maxCombo", "streak", "bestStreak"].forEach((k) => max(k, 0));
+  st.lastDay = st.lastDay || "";
+  h.stats = st;
   delete h.totalStars;
   return h;
 }

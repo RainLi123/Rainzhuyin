@@ -1,5 +1,5 @@
 // 注音小達人：離線快取。改版時把版本號加一，手機就會抓新版。
-const CACHE = "zhuyin-v3";
+const CACHE = "zhuyin-v4";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {

@@ -11,4 +11,4 @@
 
 ## 更新網站
 
-換掉 `index.html` 後，把 `sw.js` 第 2 行的版本號加一（例如 `zhuyin-v3` → `zhuyin-v4`），大家下次連網打開就會拿到新版。
+換掉 `index.html` 後，把 `sw.js` 第 2 行的版本號加一（例如 `zhuyin-v4` → `zhuyin-v5`），大家下次連網打開就會拿到新版。
